@@ -9,7 +9,7 @@ import numpy as np
 from cStringIO import StringIO
 from collections import namedtuple
 
-matplotlib.use("Agg")
+matplotlib.use('Agg')
 
 BreweryState = namedtuple('BreweryState',
                           [
@@ -17,6 +17,10 @@ BreweryState = namedtuple('BreweryState',
                               'recording_data',
                           ]
 )
+
+
+class DummyBrewery(object):
+    pass
 
 
 def generate_test_plot():
@@ -34,7 +38,7 @@ def generate_test_plot():
     fig.savefig(io, format='png')
     data = io.getvalue().encode('base64')
 
-    string = "data:image/png;base64,"
+    string = 'data:image/png;base64,'
     string += data
     return string
 
@@ -42,17 +46,17 @@ def generate_test_plot():
 class PlotUpdate(object):
 
     def __init__(self, string):
-        self.event_name = "plot_update"
+        self.event_name = 'plot_update'
         self.data = {
-            "msg": "Hallo",
-            "img_string": string,
+            'msg': 'Hallo',
+            'img_string': string,
         }
 
     def to_message(self):
         msg = json.dumps(
             {
-                "event": self.event_name,
-                "data": self.data,
+                'event': self.event_name,
+                'data': self.data,
             }
         )
         return msg
@@ -66,6 +70,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         # is the handler function
         self.msg_handler = {
             'plot_request': self._plot_request,
+            'backend': self._backend,
         }
 
         # Set up periodic call back for updating the plot. We don't start
@@ -80,7 +85,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 
     def on_close(self):
         self.plot_callback.stop()
-        print "WebSocket closed"
+        print 'WebSocket closed'
 
     def test(self):
         msg = PlotUpdate(generate_test_plot()).to_message()
@@ -92,6 +97,10 @@ class WSHandler(tornado.websocket.WebSocketHandler):
             self.plot_callback.start()
         elif (state.recording_data and data['state'] == 'off'):
             self.plot_callback.stop()
+
+    def _backend(self, data):
+        if (data['port'] == 'dummy'):
+            self.brewery = DummyBrewery()
 
 
 def init_state():
@@ -106,7 +115,7 @@ application = tornado.web.Application([
 ])
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     state = init_state
     http_server = tornado.httpserver.HTTPServer(application)
     http_server.listen(5050)
