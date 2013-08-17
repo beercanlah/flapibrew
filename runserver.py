@@ -2,17 +2,21 @@ import tornado.httpserver
 import tornado.websocket
 import tornado.ioloop
 import tornado.web
+import json
 
 
 class WSHandler(tornado.websocket.WebSocketHandler):
     def open(self):
         print "Websocket opened"
-        msg = '''{"event": "plot_update",
-"data":
-    {
-        "msg": "Hello"
-    }
-}'''
+        msg = json.dumps(
+            {
+                "event": "plot_update",
+                "data":
+                {
+                    "msg": "Hallo",
+                }
+            }
+        )
         print msg
         self.write_message(msg)
 
