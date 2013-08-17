@@ -10,51 +10,14 @@
       }
     </style>
     <script src="http://code.jquery.com/jquery.min.js"></script>
-    <script>
-      $(document).ready(function () {
- 
-        var ws;
-        var socketOpen = false;
- 
-        $("#open").click(function(evt) {
-          evt.preventDefault();
- 
-          var host = "127.0.0.1"
-          var port = "5050"
-          var uri = "/ws"
- 
-          if (!socketOpen) {
-          ws = new WebSocket("ws://" + host + ":" + port + uri);
- 
-          ws.onmessage = function(evt) {alert("message received: " + evt.data)};
- 
-          ws.onclose = function(evt) {
-            $("#open").css("background", "#ffffff");
-            $("#open").text("Open Websocket"); };
- 
-          ws.onopen = function(evt) { 
-            $("#open").css("background", "#00ff00");
-            $("#open").text("Close Websocket");
-          };
-
-          socketOpen = true;
-          }
-          else
-          {
-          ws.close();
-          socketOpen = false;
-          }
-        });
- 
-      });
-    </script>
+    <script src="main.js"></script>
   </head>
  
   <body>
     <h1>Flapibrew</h1>
     <div>
-      <button id="open">Open Websocket</button>      
-      <button id="request">Request Image</button>
+      <button id="websocketConnection">Open Websocket</button>      
+      <button id="requestImage">Request Image</button>
     </div>
   </body>
 </html>
