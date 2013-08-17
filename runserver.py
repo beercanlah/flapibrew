@@ -103,20 +103,17 @@ class WSHandler(tornado.websocket.WebSocketHandler):
             self.brewery = DummyBrewery()
 
 
-def init_state():
-    state = BreweryState()
-    state.pump_on = False
-    state.recording_data = False
-    return state
-
-
 application = tornado.web.Application([
     (r'/ws', WSHandler),
 ])
 
+state = BreweryState(
+    pump_on=False,
+    recording_data=False,
+)
+
 
 if __name__ == '__main__':
-    state = init_state
     http_server = tornado.httpserver.HTTPServer(application)
     http_server.listen(5050)
     tornado.ioloop.IOLoop.instance().start()
