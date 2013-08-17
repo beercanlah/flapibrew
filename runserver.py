@@ -7,8 +7,16 @@ import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 from cStringIO import StringIO
+from collections import namedtuple
 
 matplotlib.use("Agg")
+
+BreweryState = namedtuple('BreweryState',
+                          [
+                              'pump_on',
+                              'recording_data',
+                          ]
+)
 
 
 def generate_test_plot():
@@ -52,14 +60,26 @@ class PlotUpdate(object):
 
 class WSHandler(tornado.websocket.WebSocketHandler):
     def open(self):
-        print "Websocket opened"
-        callback = tornado.ioloop.PeriodicCallback(self.test, 1000)
-        callback.start()
+
+        # Set up message handler functions, each is a entry in a
+        # dictionary, where the key is the event name and the value
+        # is the handler function
+        self.msg_handler = {
+            'plot_request': self._plot_request,
+        }
+
+        # Set up periodic call back for updating the plot. We don't start
+        # the periodic callback yet, this will be done upon request in an
+        # event handler
+        self.plot_callback = tornado.ioloop.PeriodicCallback(self.test, 1000)
 
     def on_message(self, message):
-        self.write_message("You said: " + message)
+        # Parse message and pass on to message handler function
+        msg = json.loads(message)
+        self.msg_handler[msg['event']](msg['data'])
 
     def on_close(self):
+        self.plot_callback.stop()
         print "WebSocket closed"
 
     def test(self):
@@ -67,12 +87,27 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         print msg
         self.write_message(msg)
 
+    def _plot_request(self, data):
+        if (not state.recording_data and data['state'] == 'on'):
+            self.plot_callback.start()
+        elif (state.recording_data and data['state'] == 'off'):
+            self.plot_callback.stop()
+
+
+def init_state():
+    state = BreweryState()
+    state.pump_on = False
+    state.recording_data = False
+    return state
+
+
 application = tornado.web.Application([
     (r'/ws', WSHandler),
 ])
 
 
 if __name__ == "__main__":
+    state = init_state
     http_server = tornado.httpserver.HTTPServer(application)
     http_server.listen(5050)
     tornado.ioloop.IOLoop.instance().start()

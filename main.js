@@ -28,6 +28,7 @@ var FancyWebSocket = function(url) {
 
     this.send = function(event_name, event_data) {
 	var payload = JSON.stringify({event:event_name, data: event_data});
+	console.log(payload);
 	conn.send( payload ); // <= send JSON data to socket server
 	return this;
     };
@@ -62,7 +63,10 @@ var FancyWebSocket = function(url) {
 
 $(document).ready(function () {
 
-    
+    var breweryState = {
+	pumpOn: false,
+	recordingData: false
+    };
     
     var ws;
     var socketOpen = false;
@@ -99,8 +103,10 @@ $(document).ready(function () {
     });
     
     // Request an image
-    $("#requestImage").click(function(evt) {
+    $("#plotting").click(function(evt) {
         evt.preventDefault();
-        ws.send('Image');
+	if (!breweryState.recordinData) {
+	    ws.send('plot_request', {'state': 'on'});
+	}
     });
 });
