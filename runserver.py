@@ -7,7 +7,6 @@ import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 from cStringIO import StringIO
-import datetime
 
 matplotlib.use("Agg")
 
