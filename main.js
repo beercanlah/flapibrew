@@ -92,6 +92,10 @@ $(document).ready(function () {
 	    ws.bind("plot_update", function(data) {
 		$("#plot").attr("src", data.img_string);
 	    });
+
+	    ws.bind("status_update", function(data) {
+		$("#temperature").text(data.temperature);
+	    });
 		
             socketOpen = true;
         } // end if (!socketOpen)
@@ -106,6 +110,7 @@ $(document).ready(function () {
     $("#plotting").click(function(evt) {
         evt.preventDefault();
 	if (!breweryState.recordinData) {
+	    ws.send('backend', {'port': 'dummy'});
 	    ws.send('plot_request', {'state': 'on'});
 	}
     });

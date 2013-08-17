@@ -20,7 +20,11 @@ BreweryState = namedtuple('BreweryState',
 
 
 class DummyBrewery(object):
-    pass
+
+    def get_temperature(self):
+        temp = 25.0 + float(np.random.normal(0, 2, [1, 1])[0])
+        temp = np.round(temp, 2)
+        return temp
 
 
 def generate_test_plot():
@@ -76,7 +80,15 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         # Set up periodic call back for updating the plot. We don't start
         # the periodic callback yet, this will be done upon request in an
         # event handler
-        self.plot_callback = tornado.ioloop.PeriodicCallback(self.test, 1000)
+        self.plot_callback = tornado.ioloop.PeriodicCallback(
+            self.test,
+            2000
+        )
+
+        self.status_callback = tornado.ioloop.PeriodicCallback(
+            self.status,
+            1000
+        )
 
     def on_message(self, message):
         # Parse message and pass on to message handler function
@@ -92,6 +104,21 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         print msg
         self.write_message(msg)
 
+    def status(self):
+        temperature = self.brewery.get_temperature()
+
+        msg = json.dumps(
+            {
+                'event':  'status_update',
+                'data':
+                {
+                    'temperature': temperature,
+                }
+            }
+        )
+
+        self.write_message(msg)
+
     def _plot_request(self, data):
         if (not state.recording_data and data['state'] == 'on'):
             self.plot_callback.start()
@@ -101,6 +128,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
     def _backend(self, data):
         if (data['port'] == 'dummy'):
             self.brewery = DummyBrewery()
+            self.status_callback.start()
 
 
 application = tornado.web.Application([
