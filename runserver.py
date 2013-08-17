@@ -7,6 +7,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 from cStringIO import StringIO
+import datetime
 
 matplotlib.use("Agg")
 
@@ -16,7 +17,8 @@ def generate_test_plot():
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
     xs = np.linspace(-10, 10, 1000)
-    ax.plot(xs, np.sin(xs), label='sin(x)')
+    randsin = np.sin(xs) + np.random.normal(0, 0.1, xs.shape)
+    ax.plot(xs, randsin, label='sin(x)')
     ax.plot(xs, np.cos(xs), label='cos(x)')
     ax.legend()
 
@@ -52,15 +54,19 @@ class PlotUpdate(object):
 class WSHandler(tornado.websocket.WebSocketHandler):
     def open(self):
         print "Websocket opened"
-        msg = PlotUpdate(generate_test_plot()).to_message()
-        print msg
-        self.write_message(msg)
+        callback = tornado.ioloop.PeriodicCallback(self.test, 1000)
+        callback.start()
 
     def on_message(self, message):
         self.write_message("You said: " + message)
 
     def on_close(self):
         print "WebSocket closed"
+
+    def test(self):
+        msg = PlotUpdate(generate_test_plot()).to_message()
+        print msg
+        self.write_message(msg)
 
 application = tornado.web.Application([
     (r'/ws', WSHandler),
