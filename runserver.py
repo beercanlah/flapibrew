@@ -7,6 +7,14 @@ import tornado.web
 class WSHandler(tornado.websocket.WebSocketHandler):
     def open(self):
         print "Websocket opened"
+        msg = '''{"event": "plot_update",
+"data":
+    {
+        "msg": "Hello"
+    }
+}'''
+        print msg
+        self.write_message(msg)
 
     def on_message(self, message):
         self.write_message("You said: " + message)

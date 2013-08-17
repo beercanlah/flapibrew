@@ -39,6 +39,7 @@ var FancyWebSocket = function(url) {
     // dispatch to the right handlers
     conn.onmessage = function(evt) {
 	var json = JSON.parse(evt.data);
+	console.log(json);
 	dispatch(json.event, json.data);
     };
 
@@ -74,16 +75,20 @@ $(document).ready(function () {
         if (!socketOpen) {
             ws = new FancyWebSocket(url);
 	    
-            ws.bind("close", function(evt) {
+            ws.bind("close", function(data) {
 		$("#websocketConnection").css("background", "#ffffff");
-		$("#websocketConnection").text("Open Websocket")
+		$("#websocketConnection").text("Open Websocket");
 	    });
 	    
-            ws.bind("open", function(evt) { 
+            ws.bind("open", function(data) { 
 		$("#websocketConnection").css("background", "#00ff00");
 		$("#websocketConnection").text("Close Websocket");
             });
 
+	    ws.bind("plot_update", function(data) {
+		alert("Hallo");
+	    });
+		
             socketOpen = true;
         } // end if (!socketOpen)
         else
