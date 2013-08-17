@@ -86,7 +86,7 @@ $(document).ready(function () {
             });
 
 	    ws.bind("plot_update", function(data) {
-		alert("Hallo");
+		$("#plot").attr("src", data.img_string);
 	    });
 		
             socketOpen = true;

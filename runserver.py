@@ -3,14 +3,40 @@ import tornado.websocket
 import tornado.ioloop
 import tornado.web
 import json
+import matplotlib
+import matplotlib.pyplot as plt
+import numpy as np
+from cStringIO import StringIO
+
+matplotlib.use("Agg")
+
+
+def generate_test_plot():
+    # Plot sin and cos between -10 and 10 (1000 points)
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)
+    xs = np.linspace(-10, 10, 1000)
+    ax.plot(xs, np.sin(xs), label='sin(x)')
+    ax.plot(xs, np.cos(xs), label='cos(x)')
+    ax.legend()
+
+    # Encode image to png in base64
+    io = StringIO()
+    fig.savefig(io, format='png')
+    data = io.getvalue().encode('base64')
+
+    string = "data:image/png;base64,"
+    string += data
+    return string
 
 
 class PlotUpdate(object):
 
-    def __init__(self):
+    def __init__(self, string):
         self.event_name = "plot_update"
         self.data = {
             "msg": "Hallo",
+            "img_string": string,
         }
 
     def to_message(self):
@@ -26,7 +52,7 @@ class PlotUpdate(object):
 class WSHandler(tornado.websocket.WebSocketHandler):
     def open(self):
         print "Websocket opened"
-        msg = PlotUpdate().to_message()
+        msg = PlotUpdate(generate_test_plot()).to_message()
         print msg
         self.write_message(msg)
 
