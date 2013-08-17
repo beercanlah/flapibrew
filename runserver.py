@@ -5,18 +5,28 @@ import tornado.web
 import json
 
 
+class PlotUpdate(object):
+
+    def __init__(self):
+        self.event_name = "plot_update"
+        self.data = {
+            "msg": "Hallo",
+        }
+
+    def to_message(self):
+        msg = json.dumps(
+            {
+                "event": self.event_name,
+                "data": self.data,
+            }
+        )
+        return msg
+
+
 class WSHandler(tornado.websocket.WebSocketHandler):
     def open(self):
         print "Websocket opened"
-        msg = json.dumps(
-            {
-                "event": "plot_update",
-                "data":
-                {
-                    "msg": "Hallo",
-                }
-            }
-        )
+        msg = PlotUpdate().to_message()
         print msg
         self.write_message(msg)
 
