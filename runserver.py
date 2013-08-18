@@ -23,7 +23,11 @@ BreweryState = namedtuple('BreweryState',
 
 class DummyBrewery(object):
 
-    def get_temperature(self):
+    def __init__(self):
+        self.pump_on = False
+
+    @property
+    def temperature(self):
         temp = 25.0 + float(np.random.normal(0, 2, [1, 1])[0])
         temp = np.round(temp, 2)
         return temp
@@ -128,7 +132,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         global log
 
         timestamp = datetime.datetime.now()
-        temperature = self.brewery.get_temperature()
+        temperature = self.brewery.temperature
 
         if log is None:
             log = pd.DataFrame(
