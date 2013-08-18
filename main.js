@@ -95,6 +95,8 @@ $(document).ready(function () {
 
 	    ws.bind("status_update", function(data) {
 		$("#temperature").text(data.temperature);
+		$("#pumpState").text(data.pump_state);
+		$("#heaterState").text(data.heater_state);
 	    });
 		
             socketOpen = true;
