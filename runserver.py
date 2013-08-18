@@ -6,6 +6,8 @@ import json
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
+import datetime
 from cStringIO import StringIO
 from collections import namedtuple
 
@@ -36,6 +38,24 @@ def generate_test_plot():
     ax.plot(xs, randsin, label='sin(x)')
     ax.plot(xs, np.cos(xs), label='cos(x)')
     ax.legend()
+
+    # Encode image to png in base64
+    io = StringIO()
+    fig.savefig(io, format='png')
+    data = io.getvalue().encode('base64')
+
+    string = 'data:image/png;base64,'
+    string += data
+    return string
+
+
+def generate_temp_plot():
+
+    global log
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)
+    xs = log.index
+    ax.plot(xs, log.temperature)
 
     # Encode image to png in base64
     io = StringIO()
@@ -100,18 +120,36 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         print 'WebSocket closed'
 
     def test(self):
-        msg = PlotUpdate(generate_test_plot()).to_message()
+        msg = PlotUpdate(generate_temp_plot()).to_message()
         print msg
         self.write_message(msg)
 
     def status(self):
+        global log
+
+        timestamp = datetime.datetime.now()
         temperature = self.brewery.get_temperature()
+
+        if log is None:
+            log = pd.DataFrame(
+                [temperature],
+                index=[timestamp],
+                columns=['temperature'],
+            )
+        else:
+            new = pd.DataFrame(
+                [temperature],
+                index=[timestamp],
+                columns=['temperature'],
+            )
+            log = log.append(new)
 
         msg = json.dumps(
             {
                 'event':  'status_update',
                 'data':
                 {
+                    'timestamp': timestamp.strftime('%Y-%m-%d %H:%M'),
                     'temperature': temperature,
                 }
             }
@@ -140,6 +178,7 @@ state = BreweryState(
     recording_data=False,
 )
 
+log = None
 
 if __name__ == '__main__':
     http_server = tornado.httpserver.HTTPServer(application)
