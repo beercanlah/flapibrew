@@ -3,30 +3,49 @@
   <head>
     <title>WebSockets Hello World</title>
     <meta charset="utf-8" />
-    <style type="text/css">
-      body {
-        text-align: center;
-        min-width: 500px;
-      }
-    </style>
     <script src="http://code.jquery.com/jquery.min.js"></script>
     <script src="main.js"></script>
+    <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.0/css/bootstrap-combined.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="main.css">
   </head>
  
   <body>
-    <h1>Flapibrew</h1>
-    <div>
-      <button id="websocketConnection">Open Websocket</button>      
-      <button id="plotting">Request Image</button>
-    </div>
-   Temperature:  <div id="temperature">
-    </div>
-    Pump: <div id="pumpState">
-    </div>
-    Heater: <div id="heaterState">
-    </div>
-    <div id="plot_area">
-      <img id="plot"/>
-    </div>
+    <div class="container">
+      <div class="row">
+	<div class="span12">
+	  <div align="center">
+	  <h1>Flapibrew</h1>
+	  </div>
+	</div>
+      </div>
+      <div class="row">
+	<div class="span4">
+	  <div class="row">
+	    <div class="span2">
+	      <button id="websocketConnection" class="btn">Open Websocket</button>
+	    </div>
+	    <div class="span2">
+	      <button id="plotting" class="btn">Request Image</button>
+	    </div>
+	  </div>
+	  <div class="row">
+	    <div class="span2">Temperature:</div>
+	    <div id="temperature" class="span2"></div>
+	  </div>
+	  <div class="row">
+	    <div class="span2">Pump:</div>
+	    <div id="pumpState" class="span2"></div>
+	  </div>
+	  <div class="row">
+	    <div class="span2">Heater:</div>
+	    <div id="heaterState" class="span2"></div>
+	  </div>
+	</div>
+	<div class="span8">
+	    <div id="plotArea">
+	      <img id="plot"/>
+	    </div>
+	  </div>
+      </div>
   </body>
 </html>
