@@ -69,44 +69,29 @@ $(document).ready(function () {
     };
     
     var ws;
-    var socketOpen = false;
+    var url = "ws://127.0.0.1:5050/ws";
+	
+    ws = new FancyWebSocket(url);
     
-    $("#websocketConnection").click(function(evt) {
-        evt.preventDefault();
-	
-        var url = "ws://127.0.0.1:5050/ws";
-	
-        if (!socketOpen) {
-            ws = new FancyWebSocket(url);
-	    
-            ws.bind("close", function(data) {
-		$("#websocketConnection").css("background", "#ffffff");
-		$("#websocketConnection").text("Open Websocket");
-	    });
-	    
-            ws.bind("open", function(data) { 
-		$("#websocketConnection").css("background", "#00ff00");
-		$("#websocketConnection").text("Close Websocket");
-            });
+    ws.bind("close", function(data) {
+	$("#websocketConnection").css("background", "#ffffff");
+	$("#websocketConnection").text("Open Websocket");
+    });
+    
+    ws.bind("open", function(data) { 
+	$("#websocketConnection").css("background", "#00ff00");
+	$("#websocketConnection").text("Close Websocket");
+    });
 
-	    ws.bind("plot_update", function(data) {
-		$("#plot").attr("src", data.img_string);
-	    });
+    ws.bind("plot_update", function(data) {
+	$("#plot").attr("src", data.img_string);
+    });
 
-	    ws.bind("status_update", function(data) {
-		$("#temperature").text(data.temperature);
-		$("#pumpState").text(data.pump_state);
-		$("#heaterState").text(data.heater_state);
-		$("#PIDState").text(data.pid_state);
-	    });
-		
-            socketOpen = true;
-        } // end if (!socketOpen)
-        else
-        {
-            ws.close();
-            socketOpen = false;
-        }
+    ws.bind("status_update", function(data) {
+	$("#temperature").text(data.temperature);
+	$("#pumpState").text(data.pump_state);
+	$("#heaterState").text(data.heater_state);
+	$("#PIDState").text(data.pid_state);
     });
     
     // Request an image
