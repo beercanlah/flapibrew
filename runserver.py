@@ -2,12 +2,15 @@ import tornado.httpserver
 import tornado.websocket
 import tornado.ioloop
 import tornado.web
+from tornado.wsgi import WSGIContainer
 import json
 import numpy as np
 import pandas as pd
 import datetime
 from cStringIO import StringIO
 from collections import namedtuple
+
+from flapibrew import app
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -189,9 +192,11 @@ class WSHandler(tornado.websocket.WebSocketHandler):
             self.brewery = DummyBrewery()
             self.status_callback.start()
 
+tr = WSGIContainer(app)
 
 application = tornado.web.Application([
     (r'/ws', WSHandler),
+    (r".*", tornado.web.FallbackHandler, dict(fallback=tr)),
 ])
 
 state = BreweryState(
@@ -200,6 +205,7 @@ state = BreweryState(
 )
 
 log = None
+
 
 if __name__ == '__main__':
     http_server = tornado.httpserver.HTTPServer(application)
