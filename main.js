@@ -97,6 +97,7 @@ $(document).ready(function () {
 		$("#temperature").text(data.temperature);
 		$("#pumpState").text(data.pump_state);
 		$("#heaterState").text(data.heater_state);
+		$("#PIDState").text(data.pid_state);
 	    });
 		
             socketOpen = true;

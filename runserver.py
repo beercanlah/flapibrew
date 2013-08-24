@@ -29,6 +29,7 @@ class DummyBrewery(object):
     def __init__(self):
         self.pump_on = False
         self.heater_on = False
+        self.pid_controlled = False
 
     @property
     def temperature(self):
@@ -134,7 +135,6 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 
     def test(self):
         msg = PlotUpdate(generate_temp_plot()).to_message()
-        print msg
         self.write_message(msg)
 
     def status(self):
@@ -144,6 +144,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         temperature = self.brewery.temperature
         pump_state = 'on' if self.brewery.pump_on else 'off'
         heater_state = 'on' if self.brewery.heater_on else 'off'
+        pid_state = 'on' if self.brewery.pid_controlled else 'off'
 
         if log is None:
             log = pd.DataFrame(
@@ -168,9 +169,12 @@ class WSHandler(tornado.websocket.WebSocketHandler):
                     'temperature': temperature,
                     'pump_state': pump_state,
                     'heater_state': heater_state,
+                    'pid_state': pid_state,
                 }
             }
         )
+
+        print msg
 
         self.write_message(msg)
 
