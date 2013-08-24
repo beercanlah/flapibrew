@@ -3,13 +3,16 @@ import tornado.websocket
 import tornado.ioloop
 import tornado.web
 import json
-import matplotlib
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import datetime
 from cStringIO import StringIO
 from collections import namedtuple
+
+import matplotlib
+import matplotlib.pyplot as plt
+from matplotlib.dates import DateFormatter
+from matplotlib.ticker import MaxNLocator
 
 matplotlib.use('Agg')
 
@@ -57,9 +60,14 @@ def generate_test_plot():
 def generate_temp_plot():
 
     global log
+
+    formatter = DateFormatter("%H:%M:%S")
+    locator = MaxNLocator(4)
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
-    xs = log.index
+    ax.xaxis.set_major_formatter(formatter)
+    ax.xaxis.set_major_locator(locator)
+    xs = matplotlib.dates.date2num(log.index)
     ax.plot(xs, log.temperature)
 
     # Encode image to png in base64
