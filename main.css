@@ -1,0 +1,14 @@
+#statusArea{
+    margin-left: auto;
+    margin-right: auto;
+    width: 600px;
+}
+
+.statusName {
+    float: left;
+}
+
+statusValue {
+    float: right;
+    text-align: right;
+}
