@@ -9,8 +9,8 @@ import pandas as pd
 import datetime
 from cStringIO import StringIO
 from collections import namedtuple
-
 from flapibrew import app
+import requests
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -39,6 +39,33 @@ class DummyBrewery(object):
         temp = 25.0 + float(np.random.normal(0, 2, [1, 1])[0])
         temp = np.round(temp, 2)
         return temp
+
+    @property
+    def full_status(self):
+        temperature = self.temperature
+        pump_state = 'on' if self.pump_on else 'off'
+        heater_state = 'on' if self.heater_on else 'off'
+        pid_state = 'on' if self.pid_controlled else 'off'
+
+        return temperature, pump_state, heater_state, pid_state
+
+
+class YunBrewery(object):
+
+    def __init__(self):
+        print 'YunBrewery started'
+
+    @property
+    def full_status(self):
+        r = requests.get('http://192.168.2.105/data/get')
+        data = json.loads(r.text)
+        status = data['value']
+        temperature = float(status['temperature'])
+        pump_state = status['pump']
+        heater_state = status['heater']
+        pid_state = status['pid']
+
+        return temperature, pump_state, heater_state, pid_state
 
 
 def generate_test_plot():
@@ -144,10 +171,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         global log
 
         timestamp = datetime.datetime.now()
-        temperature = self.brewery.temperature
-        pump_state = 'on' if self.brewery.pump_on else 'off'
-        heater_state = 'on' if self.brewery.heater_on else 'off'
-        pid_state = 'on' if self.brewery.pid_controlled else 'off'
+        temperature, pump_state, heater_state, pid_state = self.brewery.full_status
 
         if log is None:
             log = pd.DataFrame(
@@ -190,6 +214,10 @@ class WSHandler(tornado.websocket.WebSocketHandler):
     def _backend(self, data):
         if (data['port'] == 'dummy'):
             self.brewery = DummyBrewery()
+            self.status_callback.start()
+
+        if (data['port'] == 'yun'):
+            self.brewery = YunBrewery()
             self.status_callback.start()
 
 tr = WSGIContainer(app)

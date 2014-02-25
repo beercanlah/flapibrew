@@ -98,7 +98,7 @@ $(document).ready(function () {
     $("#plotting").click(function(evt) {
         evt.preventDefault();
 	if (!breweryState.recordinData) {
-	    ws.send('backend', {'port': 'dummy'});
+	    ws.send('backend', {'port': 'yun'});
 	    ws.send('plot_request', {'state': 'on'});
 	}
     });
