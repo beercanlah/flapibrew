@@ -1,54 +1,55 @@
 <!doctype html>
 <html>
   <head>
-    <title>WebSockets Hello World</title>
+    <title>Totally amazing flapibrew</title>
     <meta charset="utf-8" />
-    <script src="http://code.jquery.com/jquery.min.js"></script>
-    <script src="main.js"></script>
-    <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.0/css/bootstrap-combined.min.css" rel="stylesheet">
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="main.css">
   </head>
  
   <body>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+    <script src="main.js"></script>
+
     <div class="container">
-      <div class="row">
-	<div class="span12">
-	  <div align="center">
-	  <h1>Flapibrew</h1>
-	  </div>
-	</div>
+      <div class="page-header">
+      	<h1>Flapibrew</h1>
       </div>
       <div class="row">
-	<div class="span4">
-	  <div class="row">
-	    <div class="span2">
-	    </div>
-	    <div class="span2">
-	      <button id="plotting" class="btn">Request Image</button>
-	    </div>
-	  </div>
-	  <div class="row">
-	    <div class="span2">Temperature:</div>
-	    <div id="temperature" class="span2"></div>
-	  </div>
-	  <div class="row">
-	    <div class="span2">Pump:</div>
-	    <div id="pumpState" class="span2"></div>
-	  </div>
-	  <div class="row">
-	    <div class="span2">PID Control:</div>
-	    <div id="PIDState" class="span2"></div>
-	  </div>
-	  <div class="row">
-	    <div class="span2">Heater:</div>
-	    <div id="heaterState" class="span2"></div>
-	  </div>
-	</div>
-	<div class="span8">
-	    <div id="plotArea">
-	      <img id="plot"/>
-	    </div>
-	  </div>
+      	<div class=".col-md-4">
+      	  <div class="row">
+      	    <div class=".col-md-6">
+      	    </div>
+      	    <div class=".col-md-6">
+      	      <button id="plotting" class="btn">Start monitoring</button>
+      	    </div>
+      	  </div>
+      	  <div class="row">
+      	    <div class=".col-md-6">Temperature:</div>
+      	    <div id="temperature" class=".col-md-6"></div>
+      	  </div>
+      	  <div class="row">
+      	    <div class=".col-md-6">Pump:</div>
+      	    <div id="pumpState" class=".col-md-6"></div>
+      	  </div>
+      	  <div class="row">
+      	    <div class=".col-md-6">PID Control:</div>
+      	    <div id="PIDState" class=".col-md-6"></div>
+      	  </div>
+      	  <div class="row">
+      	    <div class=".col-md-6">Heater:</div>
+      	    <div id="heaterState" class=".col-md-6"></div>
+      	  </div>
+      	</div>
+      	<div class=".col-md-8">
+      	    <div id="plotArea">
+      	      <img id="plot"/>
+      	    </div>
+      	  </div>
       </div>
   </body>
 </html>
