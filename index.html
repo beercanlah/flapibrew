@@ -20,32 +20,42 @@
       	<h1>Flapibrew</h1>
       </div>
       <div class="row">
-      	<div class="col-md-4">
+      	<div class="col-md-6">
       	  <div class="row">
-      	    <div class="col-md-6">
+      	    <div class="col-md-4">Temperature:</div>
+      	    <div id="temperature" class="col-md-4"></div>
+	    <div class="col-md-4">
+      	      <button id="plotting" class="btn btn-default form-control">Start</button>
+	    </div>
+      	  </div>
+      	  <div class="row">
+      	    <div class="col-md-4">Pump:</div>
+      	    <div id="pumpState" class="col-md-4"></div>
+	    <div class="col-md-4">
+	      <button class="btn btn-default form-control" type="button">Toggle</button>
       	    </div>
-      	    <div class="col-md-6">
-      	      <button id="plotting" class="btn">Start monitoring</button>
+	  </div>
+      	  <div class="row">
+      	    <div class="col-md-4">PID Control:</div>
+      	    <div id="PIDState" class="col-md-4"></div>
+	    <div class="col-md-4">
+		<button class="btn btn-default form-control" type="button">Toggle</button>
+      	    </div>
+	  </div>
+      	  <div class="row">
+      	    <div class="col-md-4">Heater:</div>
+      	    <div id="heaterState" class="col-md-4"></div>
+	    <div class="col-md-4">
+	      <div class="input-group">
+		<input type="text" class="form-control" />
+		<span class="input-group-btn">
+		  <button class="btn btn-default" type="button">Update</button>
+		</span>
+	      </div>
       	    </div>
       	  </div>
-      	  <div class="row">
-      	    <div class="col-md-6">Temperature:</div>
-      	    <div id="temperature" class="col-md-6"></div>
-      	  </div>
-      	  <div class="row">
-      	    <div class="col-md-6">Pump:</div>
-      	    <div id="pumpState" class="col-md-6"></div>
-      	  </div>
-      	  <div class="row">
-      	    <div class="col-md-6">PID Control:</div>
-      	    <div id="PIDState" class="col-md-6"></div>
-      	  </div>
-      	  <div class="row">
-      	    <div class="col-md-6">Heater:</div>
-      	    <div id="heaterState" class="col-md-6"></div>
-      	  </div>
-      	</div>
-      	<div class="col-md-8">
+	</div>
+      	<div class="col-md-6">
       	    <div id="plotArea">
       	      <img id="plot"/>
       	    </div>
