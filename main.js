@@ -97,10 +97,23 @@ $(document).ready(function () {
     // Request an image
     $("#plotting").click(function(evt) {
 	var backend = $("#backend").val();
-	console.log(backend);
         evt.preventDefault();
 	if (!breweryState.recordinData) {
 	    ws.send('backend', {'port': backend});
 	}
+    });
+
+    // Toggle pump
+    $("#pump-btn").click(function(evt) {
+	var backend = $("#backend").val();
+        evt.preventDefault();
+	ws.send('pump', {'action': 'toggle'});
+    });
+
+    // Toggle pid
+    $("#pid-btn").click(function(evt) {
+	var backend = $("#backend").val();
+        evt.preventDefault();
+	ws.send('pid', {'action': 'toggle'});
     });
 });

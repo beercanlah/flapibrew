@@ -49,6 +49,14 @@ class DummyBrewery(object):
 
         return temperature, pump_state, heater_state, pid_state
 
+    def pump(self, action):
+        if action == 'toggle':
+            self.pump_on = not self.pump_on
+
+    def pid(self, action):
+        if action == 'toggle':
+            self.pid_controlled = not self.pid_controlled
+
 
 class YunBrewery(object):
 
@@ -139,6 +147,8 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         self.msg_handler = {
             'plot_request': self._plot_request,
             'backend': self._backend,
+            'pump': self._pump,
+            'pid': self._pid,
         }
 
         # Set up periodic call back for updating the plot. We don't start
@@ -160,7 +170,10 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         self.msg_handler[msg['event']](msg['data'])
 
     def on_close(self):
-        self.plot_callback.stop()
+        if hasattr(self, 'plot_callback'):
+            self.plot_callback.stop()
+        if hasattr(self, 'status_callback'):
+            self.status_callback.stop()
         print 'WebSocket closed'
 
     def test(self):
@@ -218,6 +231,12 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         if (data['port'] == 'yun'):
             self.brewery = YunBrewery()
             self.status_callback.start()
+
+    def _pump(self, data):
+        self.brewery.pump(data['action'])
+
+    def _pid(self, data):
+        self.brewery.pid(data['action'])
 
 tr = WSGIContainer(app)
 
