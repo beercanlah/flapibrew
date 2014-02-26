@@ -169,7 +169,6 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 
     def status(self):
         global log
-
         timestamp = datetime.datetime.now()
         temperature, pump_state, heater_state, pid_state = self.brewery.full_status
 

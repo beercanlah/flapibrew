@@ -96,10 +96,11 @@ $(document).ready(function () {
     
     // Request an image
     $("#plotting").click(function(evt) {
+	var backend = $("#backend").val();
+	console.log(backend);
         evt.preventDefault();
 	if (!breweryState.recordinData) {
-	    ws.send('backend', {'port': 'yun'});
-	    ws.send('plot_request', {'state': 'on'});
+	    ws.send('backend', {'port': backend});
 	}
     });
 });
