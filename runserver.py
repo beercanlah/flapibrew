@@ -33,6 +33,8 @@ class DummyBrewery(object):
         self.pump_on = False
         self.pid_controlled = False
         self.duty_cycle = 0
+        self.pvalue = 0.11
+        self.ivalue = 10
 
     @property
     def temperature(self):
@@ -56,6 +58,9 @@ class DummyBrewery(object):
     def pid(self, action):
         if action == 'toggle':
             self.pid_controlled = not self.pid_controlled
+
+    def update(self):
+        pass
 
 
 class YunBrewery(object):
@@ -150,6 +155,8 @@ class WSHandler(tornado.websocket.WebSocketHandler):
             'pump': self._pump,
             'pid': self._pid,
             'heater': self._heater,
+            'pvalue': self._pvalue,
+            'ivalue': self._ivalue,
         }
 
         # Set up periodic call back for updating the plot. We don't start
@@ -184,7 +191,15 @@ class WSHandler(tornado.websocket.WebSocketHandler):
     def status(self):
         global log
         timestamp = datetime.datetime.now()
-        temperature, pump_state, heater_state, pid_state = self.brewery.full_status
+
+        self.brewery.update()
+
+        temperature = self.brewery.temperature
+        pump_state = 'on' if self.brewery.pump_on else 'off'
+        duty_cycle = str(self.brewery.duty_cycle)
+        pid_state = 'on' if self.brewery.pid_controlled else 'off'
+        pvalue = str(self.brewery.pvalue)
+        ivalue = str(self.brewery.ivalue)
 
         if log is None:
             log = pd.DataFrame(
@@ -208,8 +223,10 @@ class WSHandler(tornado.websocket.WebSocketHandler):
                     'timestamp': timestamp.strftime('%Y-%m-%d %H:%M'),
                     'temperature': temperature,
                     'pump_state': pump_state,
-                    'heater_state': heater_state,
+                    'duty_cycle': duty_cycle,
                     'pid_state': pid_state,
+                    'pvalue': pvalue,
+                    'ivalue': ivalue,
                 }
             }
         )
@@ -241,6 +258,12 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 
     def _heater(self, data):
         self.brewery.duty_cycle = int(data['dutycycle'])
+
+    def _pvalue(self, data):
+        pass
+
+    def _ivalue(self, data):
+        pass
 
 tr = WSGIContainer(app)
 

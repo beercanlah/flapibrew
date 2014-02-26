@@ -52,7 +52,7 @@
 	  </div>
       	  <div class="row">
       	    <div class="col-md-4">Heater:</div>
-      	    <div id="heaterState" class="col-md-4"></div>
+      	    <div id="dutyCycleState" class="col-md-4"></div>
 	    <div class="col-md-4">
 	      <div class="input-group">
 		<input type="text" class="form-control" / id="heater">
@@ -62,12 +62,36 @@
 	      </div>
       	    </div>
       	  </div>
-	</div>
-      	<div class="col-md-6">
-      	    <div id="plotArea">
-      	      <img id="plot"/>
+      	  <div class="row">
+	    <div class="col-md-4">P Value:</div>
+      	    <div id="pvalueState" class="col-md-4"></div>
+	    <div class="col-md-4">
+	      <div class="input-group">
+		<input type="text" class="form-control" / id="pvalue">
+		<span class="input-group-btn">
+		  <button class="btn btn-default" type="button" id="pvalue-btn">Update</button>
+		</span>
+	      </div>
       	    </div>
       	  </div>
+	  <div class="row">
+      	    <div class="col-md-4">I Value:</div>
+      	    <div id="ivalueState" class="col-md-4"></div>
+	    <div class="col-md-4">
+	      <div class="input-group">
+		<input type="text" class="form-control" / id="ivalue">
+		<span class="input-group-btn">
+		  <button class="btn btn-default" type="button" id="ivalue-btn">Update</button>
+		</span>
+	      </div>
+      	    </div>
+      	  </div>
+	</div>
+	<div class="col-md-6">
+      	  <div id="plotArea">
+      	    <img id="plot"/>
+      	  </div>
+	</div>
       </div>
   </body>
 </html>
