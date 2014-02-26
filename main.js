@@ -105,15 +105,20 @@ $(document).ready(function () {
 
     // Toggle pump
     $("#pump-btn").click(function(evt) {
-	var backend = $("#backend").val();
         evt.preventDefault();
 	ws.send('pump', {'action': 'toggle'});
     });
 
     // Toggle pid
     $("#pid-btn").click(function(evt) {
-	var backend = $("#backend").val();
         evt.preventDefault();
 	ws.send('pid', {'action': 'toggle'});
+    });
+
+    // Set dutycycle
+    $("#heater-btn").click(function(evt) {
+	var dutycycle = $("#heater").val();
+        evt.preventDefault();
+	ws.send('heater', {'dutycycle': dutycycle});
     });
 });

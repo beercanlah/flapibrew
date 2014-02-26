@@ -31,8 +31,8 @@ class DummyBrewery(object):
 
     def __init__(self):
         self.pump_on = False
-        self.heater_on = False
         self.pid_controlled = False
+        self.duty_cycle = 0
 
     @property
     def temperature(self):
@@ -44,10 +44,10 @@ class DummyBrewery(object):
     def full_status(self):
         temperature = self.temperature
         pump_state = 'on' if self.pump_on else 'off'
-        heater_state = 'on' if self.heater_on else 'off'
+        duty_cycle = str(self.duty_cycle)
         pid_state = 'on' if self.pid_controlled else 'off'
 
-        return temperature, pump_state, heater_state, pid_state
+        return temperature, pump_state, duty_cycle, pid_state
 
     def pump(self, action):
         if action == 'toggle':
@@ -149,6 +149,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
             'backend': self._backend,
             'pump': self._pump,
             'pid': self._pid,
+            'heater': self._heater,
         }
 
         # Set up periodic call back for updating the plot. We don't start
@@ -237,6 +238,9 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 
     def _pid(self, data):
         self.brewery.pid(data['action'])
+
+    def _heater(self, data):
+        self.brewery.duty_cycle = int(data['dutycycle'])
 
 tr = WSGIContainer(app)
 
