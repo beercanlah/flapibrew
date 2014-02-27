@@ -62,8 +62,8 @@ class YunBrewery(object):
         self._pump_on = bool(int(status['pump']))
         self._pid_controlled = bool(int(status['pid']))
         self._duty_cycle = float(status['dutycycle'])
-        self._ivalue = float(status['pvalue'])
-        self._pvalue = float(status['ivalue'])
+        self._ivalue = float(status['ivalue'])
+        self._pvalue = float(status['pvalue'])
 
     @property
     def pump_on(self):
@@ -78,6 +78,11 @@ class YunBrewery(object):
     def pid_controlled(self):
         return self._pid_controlled
 
+    @pid_controlled.setter
+    def pid_controlled(self, value):
+        call = self.url + '/arduino/pid/' + str(int(value))
+        requests.get(call)
+
     @property
     def duty_cycle(self):
         return self._duty_cycle
@@ -88,6 +93,12 @@ class YunBrewery(object):
 
     @property
     def pvalue(self):
+        return self._pvalue
+
+    @pvalue.setter
+    def pvalue(self, value):
+        call = self.url + '/arduino/pvalue/' + str(value)
+        requests.get(call)
         return self._pvalue
 
 
