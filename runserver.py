@@ -50,7 +50,7 @@ class DummyBrewery(object):
 class YunBrewery(object):
 
     def __init__(self, ip):
-        self.url = 'http://192.168.2.105'
+        self.url = 'http://' + ip
         self.update
 
     def update(self):
@@ -58,10 +58,12 @@ class YunBrewery(object):
         data = json.loads(r.text)
         status = data['value']
         self.temperature = float(status['temperature'])
-        self.pump_state = bool(int(status['pump']))
+        self.pump_on = bool(int(status['pump']))
         self.heater_state = bool(int(status['heater']))
-        self.pid_state = bool(int(status['pid']))
-        self.duty_cycle = int(status['dutycyle'])
+        self.pid_controlled = bool(int(status['pid']))
+        self.duty_cycle = float(status['dutycycle'])
+        self.ivalue = float(status['pvalue'])
+        self.pvalue = float(status['ivalue'])
 
 
 def generate_test_plot():
@@ -133,7 +135,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         # dictionary, where the key is the event name and the value
         # is the handler function
         self.msg_handler = {
-            'plot_request': self._plot_request,
+            'plotting': self._plotting,
             'backend': self._backend,
             'pump': self._pump,
             'pid': self._pid,
@@ -161,10 +163,12 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         self.msg_handler[msg['event']](msg['data'])
 
     def on_close(self):
+        global log
         if hasattr(self, 'plot_callback'):
             self.plot_callback.stop()
         if hasattr(self, 'status_callback'):
             self.status_callback.stop()
+            log = None
         print 'WebSocket closed'
 
     def test(self):
@@ -220,7 +224,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 
         self.write_message(msg)
 
-    def _plot_request(self, data):
+    def _plotting(self, data):
         if (data['state'] == 'on'):
             self.plot_callback.start()
         elif (data['state'] == 'off'):
@@ -230,9 +234,8 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         if (data['port'] == 'dummy'):
             self.brewery = DummyBrewery()
             self.status_callback.start()
-
-        if (data['port'] == 'yun'):
-            self.brewery = YunBrewery()
+        else:
+            self.brewery = YunBrewery(data['port'])
             self.status_callback.start()
 
     def _pump(self, data):

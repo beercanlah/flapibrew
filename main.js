@@ -98,11 +98,12 @@ $(document).ready(function () {
     });
     
     // Request an image
-    $("#plotting").click(function(evt) {
+    $("#start-btn").click(function(evt) {
 	var backend = $("#backend").val();
         evt.preventDefault();
 	if (!breweryState.recordinData) {
 	    ws.send('backend', {'port': backend});
+	    ws.send('plotting', {'state': 'on'});
 	}
     });
 
