@@ -69,6 +69,11 @@ class YunBrewery(object):
     def pump_on(self):
         return self._pump_on
 
+    @pump_on.setter
+    def pump_on(self, value):
+        call = self.url + '/arduino/pump/' + str(int(value))
+        requests.get(call)
+
     @property
     def pid_controlled(self):
         return self._pid_controlled
