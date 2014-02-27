@@ -90,10 +90,10 @@ $(document).ready(function () {
     ws.bind("status_update", function(data) {
 	$("#temperature").text(data.temperature);
 	$("#pumpState").text(data.pump_state);
-	$("#dutyCycleState").text(data.duty_cylce);
+	$("#dutycycleState").text(data.duty_cycle);
 	$("#PIDState").text(data.pid_state);
-	$("#pvalue").text(data.pvalue);
-	$("#ivalue").text(data.ivalue);
+	$("#pvalueState").text(data.pvalue);
+	$("#ivalueState").text(data.ivalue);
     });
     
     // Request an image
@@ -127,13 +127,13 @@ $(document).ready(function () {
     // Set pvalue
     $("#pvalue-btn").click(function(evt) {
         evt.preventDefault();
-	ws.send('heater', {'pvalue': $("#pvalue").val()});
+	ws.send('pvalue', {'pvalue': $("#pvalue").val()});
     });
 
     // Set dutycycle
     $("#ivalue-btn").click(function(evt) {
         evt.preventDefault();
-	ws.send('heater', {'ivalue': $("#ivalue").val()});
+	ws.send('ivalue', {'ivalue': $("#ivalue").val()});
     });
 
 });

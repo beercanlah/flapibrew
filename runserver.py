@@ -65,20 +65,18 @@ class DummyBrewery(object):
 
 class YunBrewery(object):
 
-    def __init__(self):
-        print 'YunBrewery started'
+    def __init__(self, ip):
+        self.url = 'http://192.168.2.105'
+        self.update
 
-    @property
     def full_status(self):
-        r = requests.get('http://192.168.2.105/data/get')
+        r = requests.get(self.url + '/data/get')
         data = json.loads(r.text)
         status = data['value']
-        temperature = float(status['temperature'])
-        pump_state = status['pump']
-        heater_state = status['heater']
-        pid_state = status['pid']
-
-        return temperature, pump_state, heater_state, pid_state
+        self.temperature = float(status['temperature'])
+        self.pump_state = status['pump']
+        self.heater_state = status['heater']
+        self.pid_state = status['pid']
 
 
 def generate_test_plot():
@@ -260,10 +258,11 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         self.brewery.duty_cycle = int(data['dutycycle'])
 
     def _pvalue(self, data):
-        pass
+        self.brewery.pvalue = float(data['pvalue'])
 
     def _ivalue(self, data):
-        pass
+        self.brewery.ivalue = float(data['ivalue'])
+
 
 tr = WSGIContainer(app)
 
