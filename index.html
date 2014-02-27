@@ -23,17 +23,19 @@
       	<div class="col-md-6">
 	  <div class="row">
 	    <div class="col-md-4">Backend:</div>
-	    <div class="col-md-8">
+	    <div class="col-md-4">
 	      <div class="input-group">
 		<input type="text" class="form-control" placeholder="dummy" id="backend"/>
 	      </div>
+	    </div>
+	    <div class="col-md-4">
+      	      <button id="plotting" class="btn btn-default form-control">Start</button>
 	    </div>
 	  </div>
       	  <div class="row">
       	    <div class="col-md-4">Temperature:</div>
       	    <div id="temperature" class="col-md-4"></div>
 	    <div class="col-md-4">
-      	      <button id="plotting" class="btn btn-default form-control">Start</button>
 	    </div>
       	  </div>
       	  <div class="row">
@@ -51,13 +53,13 @@
       	    </div>
 	  </div>
       	  <div class="row">
-      	    <div class="col-md-4">Heater:</div>
+      	    <div class="col-md-4">Duty Cycle:</div>
       	    <div id="dutycycleState" class="col-md-4"></div>
 	    <div class="col-md-4">
 	      <div class="input-group">
-	  	<input type="text" class="form-control" id="heater"/>
+	  	<input type="text" class="form-control" id="dutycycle"/>
 	  	<span class="input-group-btn">
-	  	  <button class="btn btn-default" type="button" id="heater-btn">Update</button>
+	  	  <button class="btn btn-default" type="button" id="dutycycle-btn">Update</button>
 	  	</span>
 	      </div>
       	    </div>

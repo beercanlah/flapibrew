@@ -118,10 +118,10 @@ $(document).ready(function () {
     });
 
     // Set dutycycle
-    $("#heater-btn").click(function(evt) {
-	var dutycycle = $("#heater").val();
+    $("#dutycycle-btn").click(function(evt) {
+	var dutycycle = $("#dutycycle").val();
         evt.preventDefault();
-	ws.send('heater', {'dutycycle': dutycycle});
+	ws.send('dutycycle', {'dutycycle': dutycycle});
     });
 
     // Set pvalue

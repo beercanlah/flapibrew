@@ -75,7 +75,7 @@ class YunBrewery(object):
         status = data['value']
         self.temperature = float(status['temperature'])
         self.pump_state = status['pump']
-        self.heater_state = status['heater']
+        self.heater_state = status['dutycycle']
         self.pid_state = status['pid']
 
 
@@ -152,7 +152,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
             'backend': self._backend,
             'pump': self._pump,
             'pid': self._pid,
-            'heater': self._heater,
+            'dutycycle': self._dutycycle,
             'pvalue': self._pvalue,
             'ivalue': self._ivalue,
         }
@@ -254,7 +254,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
     def _pid(self, data):
         self.brewery.pid(data['action'])
 
-    def _heater(self, data):
+    def _dutycycle(self, data):
         self.brewery.duty_cycle = int(data['dutycycle'])
 
     def _pvalue(self, data):
