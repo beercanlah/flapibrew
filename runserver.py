@@ -43,14 +43,6 @@ class DummyBrewery(object):
         temp = np.round(temp, 2)
         return temp
 
-    def pump(self, action):
-        if action == 'toggle':
-            self.pump_on = not self.pump_on
-
-    def pid(self, action):
-        if action == 'toggle':
-            self.pid_controlled = not self.pid_controlled
-
     def update(self):
         pass
 
@@ -244,10 +236,12 @@ class WSHandler(tornado.websocket.WebSocketHandler):
             self.status_callback.start()
 
     def _pump(self, data):
-        self.brewery.pump(data['action'])
+        if data['action'] == 'toggle':
+            self.brewery.pump_on = not self.brewery.pump_on
 
     def _pid(self, data):
-        self.brewery.pid(data['action'])
+        if data['action'] == 'toggle':
+            self.brewery.pid_controlled = not self.brewery.pid_controlled
 
     def _dutycycle(self, data):
         self.brewery.duty_cycle = int(data['dutycycle'])
