@@ -58,12 +58,32 @@ class YunBrewery(object):
         data = json.loads(r.text)
         status = data['value']
         self.temperature = float(status['temperature'])
-        self.pump_on = bool(int(status['pump']))
-        self.heater_state = bool(int(status['heater']))
-        self.pid_controlled = bool(int(status['pid']))
-        self.duty_cycle = float(status['dutycycle'])
-        self.ivalue = float(status['pvalue'])
-        self.pvalue = float(status['ivalue'])
+        self.heater = bool(int(status['heater']))
+        self._pump_on = bool(int(status['pump']))
+        self._pid_controlled = bool(int(status['pid']))
+        self._duty_cycle = float(status['dutycycle'])
+        self._ivalue = float(status['pvalue'])
+        self._pvalue = float(status['ivalue'])
+
+    @property
+    def pump_on(self):
+        return self._pump_on
+
+    @property
+    def pid_controlled(self):
+        return self._pid_controlled
+
+    @property
+    def duty_cycle(self):
+        return self._duty_cycle
+
+    @property
+    def ivalue(self):
+        return self._ivalue
+
+    @property
+    def pvalue(self):
+        return self._pvalue
 
 
 def generate_test_plot():
@@ -187,7 +207,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         pid_state = 'on' if self.brewery.pid_controlled else 'off'
         pvalue = str(self.brewery.pvalue)
         ivalue = str(self.brewery.ivalue)
-        heater = 'on' if self.brewery.pid_controlled else 'off'
+        heater = 'on' if self.brewery.heater else 'off'
 
         if log is None:
             log = pd.DataFrame(
