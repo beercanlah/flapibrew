@@ -89,6 +89,11 @@ class YunBrewery(object):
     def duty_cycle(self):
         return self._duty_cycle
 
+    @duty_cycle.setter
+    def duty_cycle(self, value):
+        call = self.url + '/arduino/heater/' + str(value)
+        requests.get(call)
+
     @property
     def ivalue(self):
         return self._ivalue
