@@ -95,6 +95,7 @@ $(document).ready(function () {
 	$("#PIDState").text(data.pid_state);
 	$("#pvalueState").text(data.pvalue);
 	$("#ivalueState").text(data.ivalue);
+	$("#setpointState").text(data.setpoint);
     });
     
     // Request an image
@@ -117,6 +118,13 @@ $(document).ready(function () {
     $("#pid-btn").click(function(evt) {
         evt.preventDefault();
 	ws.send('pid', {'action': 'toggle'});
+    });
+
+    // Set setpoint
+    $("#setpoint-btn").click(function(evt) {
+	var setpoint = $("#setpoint").val();
+        evt.preventDefault();
+	ws.send('setpoint', {'setpoint': setpoint});
     });
 
     // Set dutycycle

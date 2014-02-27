@@ -36,6 +36,7 @@ class DummyBrewery(object):
         self.pvalue = 0.11
         self.ivalue = 10
         self.heater = False
+        self.setpoint = 25.0
 
     @property
     def temperature(self):
@@ -64,6 +65,7 @@ class YunBrewery(object):
         self._duty_cycle = float(status['dutycycle'])
         self._ivalue = float(status['ivalue'])
         self._pvalue = float(status['pvalue'])
+        self._setpoint = float(status['setpoint'])
 
     @property
     def pump_on(self):
@@ -103,6 +105,15 @@ class YunBrewery(object):
     @pvalue.setter
     def pvalue(self, value):
         call = self.url + '/arduino/pvalue/' + str(value)
+        requests.get(call)
+
+    @property
+    def setpoint(self):
+        return self._setpoint
+
+    @setpoint.setter
+    def setpoint(self, value):
+        call = self.url + '/arduino/setpoint/' + str(value)
         requests.get(call)
 
 
@@ -182,6 +193,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
             'dutycycle': self._dutycycle,
             'pvalue': self._pvalue,
             'ivalue': self._ivalue,
+            'setpoint': self._setpoint
         }
 
         # Set up periodic call back for updating the plot. We don't start
@@ -228,6 +240,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         pvalue = str(self.brewery.pvalue)
         ivalue = str(self.brewery.ivalue)
         heater = 'on' if self.brewery.heater else 'off'
+        setpoint = str(self.brewery.setpoint)
 
         if log is None:
             log = pd.DataFrame(
@@ -256,6 +269,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
                     'pid_state': pid_state,
                     'pvalue': pvalue,
                     'ivalue': ivalue,
+                    'setpoint': setpoint,
                 }
             }
         )
@@ -294,6 +308,9 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 
     def _ivalue(self, data):
         self.brewery.ivalue = float(data['ivalue'])
+
+    def _setpoint(self, data):
+        self.brewery.setpoint = float(data['setpoint'])
 
 
 tr = WSGIContainer(app)
