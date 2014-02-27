@@ -53,7 +53,7 @@ class YunBrewery(object):
         self.url = 'http://192.168.2.105'
         self.update
 
-    def updeate(self):
+    def update(self):
         r = requests.get(self.url + '/data/get')
         data = json.loads(r.text)
         status = data['value']
@@ -221,9 +221,9 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         self.write_message(msg)
 
     def _plot_request(self, data):
-        if (not state.recording_data and data['state'] == 'on'):
+        if (data['state'] == 'on'):
             self.plot_callback.start()
-        elif (state.recording_data and data['state'] == 'off'):
+        elif (data['state'] == 'off'):
             self.plot_callback.stop()
 
     def _backend(self, data):
@@ -259,11 +259,6 @@ application = tornado.web.Application([
     (r'/ws', WSHandler),
     (r".*", tornado.web.FallbackHandler, dict(fallback=tr)),
 ])
-
-state = BreweryState(
-    pump_on=False,
-    recording_data=False,
-)
 
 log = None
 
