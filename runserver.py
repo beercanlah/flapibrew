@@ -43,15 +43,6 @@ class DummyBrewery(object):
         temp = np.round(temp, 2)
         return temp
 
-    @property
-    def full_status(self):
-        temperature = self.temperature
-        pump_state = 'on' if self.pump_on else 'off'
-        duty_cycle = str(self.duty_cycle)
-        pid_state = 'on' if self.pid_controlled else 'off'
-
-        return temperature, pump_state, duty_cycle, pid_state
-
     def pump(self, action):
         if action == 'toggle':
             self.pump_on = not self.pump_on
@@ -70,14 +61,15 @@ class YunBrewery(object):
         self.url = 'http://192.168.2.105'
         self.update
 
-    def full_status(self):
+    def updeate(self):
         r = requests.get(self.url + '/data/get')
         data = json.loads(r.text)
         status = data['value']
         self.temperature = float(status['temperature'])
-        self.pump_state = status['pump']
-        self.heater_state = status['dutycycle']
-        self.pid_state = status['pid']
+        self.pump_state = bool(int(status['pump']))
+        self.heater_state = bool(int(status['heater']))
+        self.pid_state = bool(int(status['pid']))
+        self.duty_cycle = int(status['dutycyle'])
 
 
 def generate_test_plot():
