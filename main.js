@@ -89,6 +89,7 @@ $(document).ready(function () {
 
     ws.bind("status_update", function(data) {
 	$("#temperature").text(data.temperature);
+	$("#heater").text(data.heater);
 	$("#pumpState").text(data.pump_state);
 	$("#dutycycleState").text(data.duty_cycle);
 	$("#PIDState").text(data.pid_state);
