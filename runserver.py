@@ -91,6 +91,11 @@ class YunBrewery(object):
     def ivalue(self):
         return self._ivalue
 
+    @ivalue.setter
+    def ivalue(self, value):
+        call = self.url + '/arduino/ivalue/' + str(value)
+        requests.get(call)
+
     @property
     def pvalue(self):
         return self._pvalue
@@ -99,7 +104,6 @@ class YunBrewery(object):
     def pvalue(self, value):
         call = self.url + '/arduino/pvalue/' + str(value)
         requests.get(call)
-        return self._pvalue
 
 
 def generate_test_plot():
