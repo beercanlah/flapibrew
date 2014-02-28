@@ -11,6 +11,7 @@ from cStringIO import StringIO
 from collections import namedtuple
 from flapibrew import app
 import requests
+from contextlib import closing
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -73,8 +74,7 @@ class YunBrewery(object):
 
     @pump_on.setter
     def pump_on(self, value):
-        call = self.url + '/arduino/pump/' + str(int(value))
-        requests.get(call)
+        self._yun_command('/pump/' + str(int(value)))
 
     @property
     def pid_controlled(self):
@@ -82,8 +82,7 @@ class YunBrewery(object):
 
     @pid_controlled.setter
     def pid_controlled(self, value):
-        call = self.url + '/arduino/pid/' + str(int(value))
-        requests.get(call)
+        self._yun_command('/pid/' + str(int(value)))
 
     @property
     def duty_cycle(self):
@@ -91,8 +90,7 @@ class YunBrewery(object):
 
     @duty_cycle.setter
     def duty_cycle(self, value):
-        call = self.url + '/arduino/heater/' + str(value)
-        requests.get(call)
+        self._yun_command('/heater/' + str(value))
 
     @property
     def ivalue(self):
@@ -100,8 +98,7 @@ class YunBrewery(object):
 
     @ivalue.setter
     def ivalue(self, value):
-        call = self.url + '/arduino/ivalue/' + str(value)
-        requests.get(call)
+        self._yun_command('/ivalue/' + str(value))
 
     @property
     def pvalue(self):
@@ -109,8 +106,7 @@ class YunBrewery(object):
 
     @pvalue.setter
     def pvalue(self, value):
-        call = self.url + '/arduino/pvalue/' + str(value)
-        requests.get(call)
+        self._yun_command('/pvalue/' + str(value))
 
     @property
     def setpoint(self):
@@ -118,10 +114,14 @@ class YunBrewery(object):
 
     @setpoint.setter
     def setpoint(self, value):
-        call = self.url + '/arduino/setpoint/' + str(value)
+        self._yun_command('/setpoint/' + str(value))
+
+    def _yun_command(self, command):
+        call = self.url + '/arduino' + command
+        print call
         requests.get(call)
 
-
+        
 def generate_test_plot():
     # Plot sin and cos between -10 and 10 (1000 points)
     fig = plt.figure()
@@ -136,6 +136,7 @@ def generate_test_plot():
     io = StringIO()
     fig.savefig(io, format='png')
     data = io.getvalue().encode('base64')
+    fig.close()
 
     string = 'data:image/png;base64,'
     string += data
