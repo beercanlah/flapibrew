@@ -104,7 +104,7 @@ $(document).ready(function () {
         evt.preventDefault();
 	if (!breweryState.recordinData) {
 	    ws.send('backend', {'port': backend});
-	    ws.send('plotting', {'state': 'on'});
+	    // ws.send('plotting', {'state': 'on'});
 	}
     });
 
