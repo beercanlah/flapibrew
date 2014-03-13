@@ -280,8 +280,6 @@ class WSHandler(tornado.websocket.WebSocketHandler):
             }
         )
 
-        print msg
-
         self.write_message(msg)
 
     def _plotting(self, data):
