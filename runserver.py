@@ -14,11 +14,11 @@ import requests
 from contextlib import closing
 
 import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.dates import DateFormatter
 from matplotlib.ticker import MaxNLocator
 
-matplotlib.use('Agg')
 
 BreweryState = namedtuple('BreweryState',
                           [
@@ -163,6 +163,7 @@ def generate_temp_plot():
 
     string = 'data:image/png;base64,'
     string += data
+
     return string
 
 
